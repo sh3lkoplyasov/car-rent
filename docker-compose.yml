@@ -1,0 +1,33 @@
+version: '3.3'
+
+services:
+  postgres:
+    image: postgres:latest
+    restart: always
+    container_name: database
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+
+  node:
+    restart: always
+    container_name: backend
+    build: ./
+    volumes:
+      - ./:/var/www/app
+    ports:
+      - "3000:3000"
+    env_file: .env
+    links:
+      - postgres
+    environment:
+      - POSTGRES_LOCAL_PORT=5432
+      - POSTGRES_HOST=localhost
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=postgres
+    command:
+      npm i & npm run start
